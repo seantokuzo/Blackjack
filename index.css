@@ -8,4 +8,65 @@
 
 body {
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    font-family: 'Trebuchet MS', sans-serif;
+    font-size: 50px;
+    color: #FFFFFF;
+
+    background-image: url("images/table.png");
+}
+
+h1 {
+    color: goldenrod;
+    font-size: 100px;
+}
+
+#message-el {
+
+}
+
+.card {
+
+}
+
+#card1 {
+    visibility: hidden;
+    z-index: -1;
+}
+
+#card2 {
+    visibility: hidden;
+    z-index: -1;
+}
+
+#card3 {
+    visibility: hidden;
+    z-index: -1;
+}
+
+#card4 {
+    visibility: hidden;
+    z-index: -1;
+}
+
+#card5 {
+    visibility: hidden;
+    z-index: -1;
+}
+
+button {
+    position: absolute;
+    top: 75%;
+    font-size: 40px;
+    border-radius: 10px;
+    padding: 10px;
+    min-width: 200px;
+}
+
+#sum {
+    position: absolute;
+    top: 80%;
 }
