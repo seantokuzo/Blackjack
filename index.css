@@ -39,37 +39,51 @@ h1 {
     margin: 0 0 20px;;
 }
 
-#cards-container {
+#all-cards-div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#house-cards-container {
+
+}
+
+#user-cards-container {
+    width: 100%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
     padding: 20px;
+    margin-left: auto;
 }
 
 .card {
     width: 250px;
     box-shadow: 10px 10px 10px -3px rgba(0, 0, 0, 0.9);
+    margin-right: -135px;
 }
 
 #card1 {
     /* visibility: hidden; */
     z-index: 1;
-    margin-right: -135px;
 }
 
 #card2 {
     /* visibility: hidden; */
     z-index: 2;
-    margin-right: -135px;
 }
 
 #card3 {
     /* visibility: hidden; */
     z-index: 3;
-    margin-right: -135px;
 }
 
 #card4 {
     /* visibility: hidden; */
     z-index: 4;
-    margin-right: -135px;
 }
 
 #card5 {
