@@ -6,6 +6,8 @@ const fourthCard = document.getElementById("card4")
 const fifthCard = document.getElementById("card5")
 const message = document.getElementById("message-el")
 const sumDisplay = document.getElementById("sum")
+const cardsContainer = document.getElementById("cards-container")
+const buttonsDiv = document.getElementById("buttons-div")
 const cardValues = {
     '1': 1,
     '2': 2,
@@ -31,8 +33,12 @@ let drawCount = 0
 let myCards = []
 let myCountHigh
 let myCountLow
+let gameOver = false
+
+
 
 function theDrawHandler() {
+    //SETTING THE USERS COUNTS
     const myCardsValueArray = myCards.map(card => cardValues[card])
     myCountHigh = myCardsValueArray.reduce((acc, num) => acc + num)
 
@@ -43,6 +49,7 @@ function theDrawHandler() {
     })
     myCountLow = myCardsValueArrayLow.reduce((acc, num) => acc + num)
 
+    //SETTING THE SUM DISPLAY
     if (myCountHigh === 21 || myCountLow == 21) {
         sumDisplay.innerText = `Sum: ${myCountLow}`
     } else if (myCountHigh > 21 && myCountLow < 21) {
@@ -54,45 +61,85 @@ function theDrawHandler() {
     } else {
         sumDisplay.innerText = `Sum: High - ${myCountHigh}, Low - ${myCountLow}`
     }
+    //SETTING THE BUTTON AND MESSAGE TEXT
     if (myCountHigh === 21 || myCountLow === 21) {
         message.innerText = "YOU WIN!"
         myButton.innerText = "Run It Back"
+        gameOver = true
         drawCount = 5
     } else if (drawCount === 5 && myCountLow < 21) {
         message.innerText = "YOU WIN!"
         myButton.innerText = "Run It Back"
+        gameOver = true
     } else if (myCountLow > 21) {
         message.innerText = "YOU LOSER!"
         myButton.innerText = "Try Again"
+        gameOver = true
         drawCount = 5
     } else {
-        message.innerText = "Want another card?"
+        message.innerText = "Draw another card or stay?"
+        myButton.innerText = "HIT ME"
     }
+    //ADD HOLD BUTTON
+    // if (drawCount > 0 && drawCount < 5 && gameOver === false) {
+    //     let holdButton = document.createElement("button")
+    //     holdButton.id = "hold-button"
+    //     holdButton.onclick = holdEm()
+    //     holdButton.value = "HOLD"
+    //     buttonsDiv.appendChild(holdButton)
+    // }
 }
 
-const setCard = (card, url) => {
-    card.src = url
-    card.style.zIndex = 9
-    card.style.visibility = "visible"
+// const setCard = (card, url) => {
+//     card.src = url
+//     card.style.visibility = "visible"
+// }
+
+const addCard = (url) => {
+    var cardImg = document.createElement("IMG")
+    cardImg.src = url
+    cardImg.alt = "card"
+    cardImg.id = `card${drawCount}`
+    cardImg.className = "card"
+    cardsContainer.appendChild(cardImg)
 }
 
-const resetCard = (card) => {
-    card.src = ''
-    card.style.zIndex = -1
-    card.style.visibility = "hidden"
+// const resetCard = (card) => {
+//     card.src = ''
+//     card.style.visibility = "hidden"
+// }
+
+function holdEm() {
+    console.log("Hold Please")
+}
+
+function removeMyCards() {
+    const firstCard = document.getElementById("card1")
+    const secondCard = document.getElementById("card2")
+    const thirdCard = document.getElementById("card3")
+    const fourthCard = document.getElementById("card4")
+    const fifthCard = document.getElementById("card5")
+    firstCard && firstCard.remove()
+    secondCard && secondCard.remove()
+    thirdCard && thirdCard.remove()
+    fourthCard && fourthCard.remove()
+    fifthCard && fifthCard.remove()
 }
 
 function Draw() {
     //FIRST DRAW
     if (drawCount === 0) {
-        drawCount += 2
         fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=2`)
             .then(res => res.json())
             .then(data => {
                 data.cards.map(obj => myCards.push(obj.value))
                 console.log(myCards)
-                setCard(firstCard, data.cards[0].image)
-                setCard(secondCard, data.cards[1].image)
+                drawCount += 1
+                // setCard(firstCard, data.cards[0].image)
+                addCard(data.cards[0].image)
+                drawCount += 1
+                // setCard(secondCard, data.cards[1].image)
+                addCard(data.cards[1].image)
                 theDrawHandler()
                 myStorage.setItem('deckId', data.deck_id)
                 currentDeck = data.deck_id
@@ -106,13 +153,9 @@ function Draw() {
             .then(data => {
                 data.cards.map(obj => myCards.push(obj.value))
                 console.log(myCards)
-                const currentCard = document.getElementById(`card${drawCount}`)
-                setCard(currentCard, data.cards[0].image)
+                // const currentCard = document.getElementById(`card${drawCount}`)
+                addCard(data.cards[0].image)
                 theDrawHandler()
-                // addUpHigh()
-                // addUpLow()
-                // handleSum()
-                // checkStatus()
                 myButton.innerText = "New Game"
             })
             .catch(e => console.log(e))
@@ -123,8 +166,9 @@ function Draw() {
             .then(res => res.json())
             .then(data => {
                 data.cards.map(obj => myCards.push(obj.value))
-                const currentCard = document.getElementById(`card${drawCount}`)
-                setCard(currentCard, data.cards[0].image)
+                // const currentCard = document.getElementById(`card${drawCount}`)
+                // setCard(currentCard, data.cards[0].image)
+                addCard(data.cards[0].image)
                 theDrawHandler()
             })
             .catch(e => console.log(e))
@@ -134,9 +178,11 @@ function Draw() {
         myCards = []
         myCountHigh = 0
         myCountLow = 0
-        resetCard(thirdCard)
-        resetCard(fourthCard)
-        resetCard(fifthCard)
+        gameOver = false
+        removeMyCards()
+        // resetCard(thirdCard)
+        // resetCard(fourthCard)
+        // resetCard(fifthCard)
         message.innerText = "Big Money Big Money Big Money"
         fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/shuffle/`)
             .then(res => res.json())
@@ -147,8 +193,8 @@ function Draw() {
             .then(data => {
                 drawCount = 2
                 data.cards.map(obj => myCards.push(obj.value))
-                setCard(firstCard, data.cards[0].image)
-                setCard(secondCard, data.cards[1].image)
+                addCard(data.cards[0].image)
+                addCard(data.cards[1].image)
                 theDrawHandler()
                 myButton.innerText = "Draw"
             })
@@ -169,11 +215,12 @@ const getYourDeck = () => {
             .then(data => {
                 data.cards.map(obj => myCards.push(obj.value))
                 myStorage.setItem('deckId', data.deck_id)
-                setCard(firstCard, data.cards[0].image)
-                setCard(secondCard, data.cards[1].image)
+                drawCount = 1
+                addCard(data.cards[0].image)
+                drawCount = 2
+                addCard(data.cards[1].image)
                 theDrawHandler()
                 currentDeck = data.deck_id
-                drawCount = 2
             })
             .catch(e => console.log(e))
     }

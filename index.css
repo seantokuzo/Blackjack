@@ -39,43 +39,49 @@ h1 {
     margin: 0 0 20px;;
 }
 
-.cards-container-top {
-    padding: 20px;
-}
-
-.cards-container-bottom {
+#cards-container {
     padding: 20px;
 }
 
 .card {
-    margin: 10px 10px;
     width: 250px;
     box-shadow: 10px 10px 10px -3px rgba(0, 0, 0, 0.9);
 }
 
 #card1 {
-    visibility: hidden;
-    z-index: -1;
+    /* visibility: hidden; */
+    z-index: 1;
+    margin-right: -135px;
 }
 
 #card2 {
-    visibility: hidden;
-    z-index: -1;
+    /* visibility: hidden; */
+    z-index: 2;
+    margin-right: -135px;
 }
 
 #card3 {
-    visibility: hidden;
-    z-index: -1;
+    /* visibility: hidden; */
+    z-index: 3;
+    margin-right: -135px;
 }
 
 #card4 {
-    visibility: hidden;
-    z-index: -1;
+    /* visibility: hidden; */
+    z-index: 4;
+    margin-right: -135px;
 }
 
 #card5 {
-    visibility: hidden;
-    z-index: -1;
+    /* visibility: hidden; */
+    z-index: 5;
+}
+
+#buttons-div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
 }
 
 button {
@@ -83,6 +89,7 @@ button {
     top: 80%;
     font-size: 40px;
     border-radius: 10px;
+    margin: 0 20px;
     padding: 20px;
     min-width: 250px;
     color: white;
