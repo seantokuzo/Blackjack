@@ -4,6 +4,8 @@ const secondCard = document.getElementById("card2")
 const thirdCard = document.getElementById("card3")
 const fourthCard = document.getElementById("card4")
 const fifthCard = document.getElementById("card5")
+const message = document.getElementById("message-el")
+const sumDisplay = document.getElementById("sum")
 const cardValues = {
     '1': 1,
     '2': 2,
@@ -48,37 +50,36 @@ function addUpLow() {
     console.log(myCountLow)
 }
 
-// const addUpHigh = (cards) => {
-//     console.log(cards)
-//     countAceHigh = cards.map(card => {
-//         if (parseInt(card)) {
-//             console.log('number')
-//             countAceHigh = countAceHigh + parseInt(card)
-//         } else if (card === 'ACE') {
-//             console.log('ace')
-//             countAceHigh = countAceHigh + 11
-//         } else {
-//             console.log('face-card')
-//             countAceHigh = countAceHigh + 10
-//         }
-//         console.log(countAceHigh)
-//     })
-// }
+const handleSum = () => {
+    if (myCountHigh === 21 || myCountLow == 21) {
+        sumDisplay.innerText = `Sum: ${myCountLow}`
+    } else if (myCountHigh > 21 && myCountLow < 21) {
+        sumDisplay.innerText = `Sum: ${myCountLow}`
+    } else if (myCountHigh === myCountLow) {
+        sumDisplay.innerText = `Sum: ${myCountHigh}`
+    } else if (myCountLow > 21) {
+        sumDisplay.innerText = `Sum: ${myCountLow}`
+    } else {
+        sumDisplay.innerText = `Sum: High - ${myCountHigh}, Low - ${myCountLow}`
+    }
+}
 
-// const addUpLow = () => {
-//     countAceLow = myCards.map(card => {
-//         if (parseInt(card)) {
-//             countAceLow = countAceLow + parseInt(card)
-//         } else if (card === 'ACE') {
-//             countAceLow = countAceLow + 1
-//         } else {
-//             countAceLow = countAceLow + 10
-//         }
-//         console.log(countAceLow)
-//     })
-// }
-
-
+const checkStatus = () => {
+    if (myCountHigh === 21 || myCountLow === 21) {
+        message.innerText = "YOU WIN!"
+        myButton.innerText = "Run It Back"
+        drawCount = 5
+    } else if (drawCount === 5 && myCountLow < 21) {
+        message.innerText = "YOU WIN!"
+        myButton.innerText = "Run It Back"
+    } else if (myCountLow > 21) {
+        message.innerText = "YOU LOSER!"
+        myButton.innerText = "Try Again"
+        drawCount = 5
+    } else {
+        message.innerText = "Want another card?"
+    }
+}
 
 const setCard = (card, url) => {
     card.src = url
@@ -95,58 +96,60 @@ const resetCard = (card) => {
 function Draw() {
     //FIRST DRAW
     if (drawCount === 0) {
+        drawCount += 2
         fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=2`)
             .then(res => res.json())
             .then(data => {
                 console.log(data)
                 data.cards.map(obj => myCards.push(obj.value))
                 console.log(myCards)
-                addUpHigh()
-                addUpLow()
-                myStorage.setItem('deckId', data.deck_id)
                 setCard(firstCard, data.cards[0].image)
                 setCard(secondCard, data.cards[1].image)
-                drawCount += 2
+                addUpHigh()
+                addUpLow()
+                handleSum()
+                checkStatus()
+                myStorage.setItem('deckId', data.deck_id)
                 currentDeck = data.deck_id
             })
             .catch(e => console.log(e))
-        //LAST DRAW
-    } else if (drawCount === 4) {
-        fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=1`)
+            //LAST DRAW
+        } else if (drawCount === 4) {
+            drawCount += 1
+            fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=1`)
             .then(res => res.json())
             .then(data => {
                 console.log(data)
                 data.cards.map(obj => myCards.push(obj.value))
                 console.log(myCards)
-                const currentCard = document.getElementById(`card${drawCount + 1}`)
+                const currentCard = document.getElementById(`card${drawCount}`)
                 setCard(currentCard, data.cards[0].image)
                 addUpHigh()
                 addUpLow()
-                drawCount += 1
+                handleSum()
+                checkStatus()
                 myButton.innerText = "New Game"
             })
             .catch(e => console.log(e))
-        //IN BETWEEN DRAWS
-    } else if (drawCount > 0 && drawCount < 4) {
-        fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=1`)
+            //IN BETWEEN DRAWS
+        } else if (drawCount > 0 && drawCount < 4) {
+            drawCount += 1
+            fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=1`)
             .then(res => res.json())
             .then(data => {
                 console.log(data)
                 data.cards.map(obj => myCards.push(obj.value))
                 console.log(myCards)
+                const currentCard = document.getElementById(`card${drawCount}`)
+                setCard(currentCard, data.cards[0].image)
                 addUpHigh()
                 addUpLow()
-                const currentCard = document.getElementById(`card${drawCount + 1}`)
-                setCard(currentCard, data.cards[0].image)
-                drawCount += 1
+                handleSum()
+                checkStatus()
             })
             .catch(e => console.log(e))
         //NEW GAME START WITH 2 CARDS
     } else {
-        fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/shuffle/`)
-            .then(res => res.json())
-            .then(data => console.log(data))
-            .catch(e => console.log(e))
         drawCount = 0
         myCards = []
         myCountHigh = 0
@@ -154,17 +157,24 @@ function Draw() {
         resetCard(thirdCard)
         resetCard(fourthCard)
         resetCard(fifthCard)
+        message.innerText = "Big Money Big Money Big Money"
+        fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/shuffle/`)
+            .then(res => res.json())
+            .then(data => console.log(data))
+            .catch(e => console.log(e))
         fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=2`)
             .then(res => res.json())
             .then(data => {
+                drawCount = 2
                 console.log(data)
                 data.cards.map(obj => myCards.push(obj.value))
                 console.log(myCards)
-                addUpHigh()
-                addUpLow()
                 setCard(firstCard, data.cards[0].image)
                 setCard(secondCard, data.cards[1].image)
-                drawCount = 2
+                addUpHigh()
+                addUpLow()
+                handleSum()
+                checkStatus()
                 myButton.innerText = "Draw"
             })
             .catch(e => console.log(e))
