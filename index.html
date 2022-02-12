@@ -13,13 +13,15 @@
 <body>
     <h1>Blackjack</h1>
     <p id="message-el">Want to play a round?</p>
-    <p>Cards:</p>
+    <p id="text-cards">Cards:</p>
+    <div class="cards-container">
     <img src="#" class="card" id="card1">
     <img src="#" class="card" id="card2">
     <img src="#" class="card" id="card3">
     <img src="#" class="card" id="card4">
     <img src="#" class="card" id="card5">
-    <button onclick="initialDraw()">Draw</button>
+    </div>
+    <button onclick="Draw()" id="button">Draw</button>
     <p id="sum">Sum:</p>
     <script src="index.js"></script>
 </body>

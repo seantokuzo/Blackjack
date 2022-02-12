@@ -12,6 +12,7 @@ body {
     flex-direction: column;
     align-items: center;
 
+    text-align: center;
     font-family: 'Trebuchet MS', sans-serif;
     font-size: 50px;
     color: #FFFFFF;
@@ -25,11 +26,25 @@ h1 {
 }
 
 #message-el {
+    font-size: 60px;
+}
 
+#text-cards {
+    margin: 0 0 20px;;
+}
+
+.cards-container {
+    width: 100%;
+    min-width: none;
+    height: auto;
+    
+    margin-left: auto;
+    padding: 50px;
 }
 
 .card {
-
+    margin: 10px 10px;
+    width: 250px;
 }
 
 #card1 {
@@ -59,7 +74,7 @@ h1 {
 
 button {
     position: absolute;
-    top: 75%;
+    top: 80%;
     font-size: 40px;
     border-radius: 10px;
     padding: 10px;
@@ -68,5 +83,5 @@ button {
 
 #sum {
     position: absolute;
-    top: 80%;
+    top: 85%;
 }
