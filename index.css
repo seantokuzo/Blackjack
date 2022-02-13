@@ -75,48 +75,24 @@ h1 {
     margin-right: -55px;
 }
 
-#card1 {
+.card1 {
     z-index: 1;
     margin-left: -55px;
 }
 
-#card2 {
+.card2 {
     z-index: 2;
 }
 
-#card3 {
+.card3 {
     z-index: 3;
 }
 
-#card4 {
+.card4 {
     z-index: 4;
 }
 
-#card5 {
-    z-index: 5;
-}
-
-#house-card1 {
-    z-index: 1;
-}
-
-#house-card2 {
-    z-index: 2;
-    margin-right: -55px;
-}
-
-#house-card3 {
-    z-index: 3;
-    margin-right: -55px;
-}
-
-#house-card4 {
-    z-index: 4;
-    margin-right: -55px;
-}
-
-#house-card5 {
-    margin-right: -55px;
+.card5 {
     z-index: 5;
 }
 

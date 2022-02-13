@@ -72,8 +72,7 @@ const addUserCard = (url) => {
     cardImg.src = url
     cardImg.alt = "card"
     console.log(gameState.userCards)
-    cardImg.id = `card${gameState.userCards.length}`
-    cardImg.className = "card"
+    cardImg.className = `card card${gameState.userCards.length}`
     userCardsContainer.appendChild(cardImg)
 }
 
@@ -83,8 +82,7 @@ const addHouseCard = (url) => {
     houseCardImg.alt = "card"
     // console.log(gameState.houseCards)
     // console.log(gameState.houseCards.length)
-    houseCardImg.id = `card${gameState.houseCards.length}`
-    houseCardImg.className = "card"
+    houseCardImg.className = `card card${gameState.houseCards.length}`
     houseCardsContainer.appendChild(houseCardImg)
 }
 
@@ -92,28 +90,40 @@ function holdEm() {
     console.log("Hold Please")
 }
 
-// function removeCards() {
-//     let userCard1 = document.getElementById("card1")
-//     let userCard2 = document.getElementById("card2")
-//     let userCard3 = document.getElementById("card3")
-//     let userCard4 = document.getElementById("card4")
-//     let userCard5 = document.getElementById("card5")
-//     let houseCard1 = document.getElementById("house-card1")
-//     let houseCard2 = document.getElementById("house-card2")
-//     let houseCard3 = document.getElementById("house-card3")
-//     let houseCard4 = document.getElementById("house-card4")
-//     let houseCard5 = document.getElementById("house-card5")
-//     userCard1 && userCard1.remove()
-//     userCard2 && userCard2.remove()
-//     userCard3 && userCard3.remove()
-//     userCard4 && userCard4.remove()
-//     userCard5 && userCard5.remove()
-//     houseCard1 && houseCard1.remove()
-//     houseCard2 && houseCard2.remove()
-//     houseCard3 && houseCard3.remove()
-//     houseCard4 && houseCard4.remove()
-//     houseCard5 && houseCard5.remove()
-// }
+function removeCards() {
+    let allCards = document.getElementsByClassName("card")
+    while (allCards.length > 0) {
+        allCards[0].parentNode.removeChild(allCards[0])
+    }
+}
+
+function sumUserCards() {
+    const userCardsValueArray = gameState.userCards.map(card => cardValues[card])
+    gameState.userCountHigh = userCardsValueArray.reduce((acc, num) => acc + num)
+
+    const userCardsValueArrayLow = gameState.userCards.map(card => {
+        if (card === "ACE") {
+            return 1
+        } else return cardValues[card]
+    })
+    gameState.userCountLow = userCardsValueArrayLow.reduce((acc, num) => acc + num)
+    // console.log(`User Count High: ${gameState.userCountHigh}`)
+    // console.log(`User Count Low: ${gameState.userCountLow}`)
+}
+
+function sumHouseCards() {
+    const houseCardsValueArray = gameState.houseCards.map(card => cardValues[card])
+    gameState.houseCountHigh = houseCardsValueArray.reduce((acc, num) => acc + num)
+
+    const houseCardsValueArrayLow = gameState.houseCards.map(card => {
+        if (card === "ACE") {
+            return 1
+        } else return cardValues[card]
+    })
+    gameState.houseCountLow = houseCardsValueArrayLow.reduce((acc, num) => acc + num)
+    // console.log(`House Count High: ${gameState.houseCountHigh}`)
+    // console.log(`House Count Low: ${gameState.houseCountLow}`)
+}
 
 function drawUserCard() {
     fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=1`)
@@ -124,9 +134,7 @@ function drawUserCard() {
             addUserCard(data.cards[0].image)
             sumUserCards()
             setSumDisplay()
-            if (gameState.userCards.length === 2) {
-                setButtons()
-            } else return
+            setButtons()
         })
         .catch(e => console.log(e))
 }
@@ -143,38 +151,10 @@ function drawHouseCard() {
         .catch(e => console.log(e))
 }
 
-function sumUserCards() {
-    const userCardsValueArray = gameState.userCards.map(card => cardValues[card])
-    gameState.userCountHigh = userCardsValueArray.reduce((acc, num) => acc + num)
-
-    const userCardsValueArrayLow = gameState.userCards.map(card => {
-        if (card === "ACE") {
-            return 1
-        } else return cardValues[card]
-    })
-    gameState.userCountLow = userCardsValueArrayLow.reduce((acc, num) => acc + num)
-    console.log(`User Count High: ${gameState.userCountHigh}`)
-    console.log(`User Count Low: ${gameState.userCountLow}`)
-}
-
-function sumHouseCards() {
-    const houseCardsValueArray = gameState.houseCards.map(card => cardValues[card])
-    gameState.houseCountHigh = houseCardsValueArray.reduce((acc, num) => acc + num)
-
-    const houseCardsValueArrayLow = gameState.houseCards.map(card => {
-        if (card === "ACE") {
-            return 1
-        } else return cardValues[card]
-    })
-    gameState.houseCountLow = houseCardsValueArrayLow.reduce((acc, num) => acc + num)
-    console.log(`House Count High: ${gameState.houseCountHigh}`)
-    console.log(`House Count Low: ${gameState.houseCountLow}`)
-}
-
 function setButtons() {
     const buttonsDiv = document.getElementById("buttons-div")
     console.log(gameState.userCards.length)
-    if (gameState.userCards.length > 0 && gameState.userCards.length < 5) {
+    if (gameState.userCards.length == 2) {
         myButton.innerText = "Hit Me"
         let holdButton = document.createElement("button")
         holdButton.id = "hold-button"
@@ -183,7 +163,9 @@ function setButtons() {
         console.log("hi!")
         buttonsDiv.appendChild(holdButton)
     } else if (gameState.userCards.length === 5) {
+        const holdButton = document.getElementById("hold-button")
         holdButton.remove()
+        myButton.innerText = "Run it Back"
     }
 }
 
@@ -196,18 +178,21 @@ function Draw() {
         //FETCH HOUSE FIRST 2 CARDS
         drawHouseCard()
         drawHouseCard()
+        message.innerText = "Big Money Big Money Big Money"
         //IN BETWEEN DRAWS
     } else if (gameState.userCards.length > 0 && gameState.userCards.length < 5) {
         drawUserCard()
         //NEW GAME START WITH 2 CARDS
     } else {
         //RESET STATE
-        gameState.userCards.length = 0
         gameState.userCards = []
         gameState.userCountHigh = 0
         gameState.userCountLow = 0
+        gameState.houseCards = []
+        gameState.houseCountHigh = 0
+        gameState.houseCountLow = 0
         gameState.gameOver = false
-        message.innerText = "Big Money Big Money Big Money"
+        message.innerText = "Here We Go Again"
         myButton.innerText = "Hit Me"
         //REMOVE THE PREVIOUS GAME'S CARDS
         removeCards()
@@ -215,7 +200,7 @@ function Draw() {
         shuffleDeck()
         //FETCH USER FIRST 2 CARDS
         drawUserCard()
-        drawUserCard(userCards.length)
+        drawUserCard()
         // FETCH HOUSE FIRST 2 CARDS
         drawHouseCard()
         drawHouseCard()
