@@ -43,6 +43,7 @@ let gameState = {
     houseCountHigh: 0,
     houseCountLow: 0,
     houseCount: 0,
+    housePlaying: false,
     gameOver: false,
     wins: 0,
     losses: 0
@@ -92,6 +93,11 @@ const addUserCard = (url) => {
     userCardsContainer.appendChild(cardImg)
 }
 
+function showHiddenHouseCard() {
+    let houseCard2 = document.getElementById("house-card-2")
+    houseCard2.src = houseCardsUrls[1]
+}
+
 //ADD HOUSE CARDS TO DISPLAY
 const addHouseCard = (url) => {
     var houseCardImg = document.createElement("IMG")
@@ -102,8 +108,7 @@ const addHouseCard = (url) => {
         houseCardImg.src = "https://andrewthamcc.github.io/blackjack2.0/assets/facedown.png"
     } else if (gameState.houseCards.length === 3) {
         houseCardImg.src = url
-        let houseCard2 = document.getElementById("house-card-2")
-        houseCard2.src = houseCardsUrls[1]
+        showHiddenHouseCard()
     } else {
         houseCardImg.src = url
     }
@@ -133,7 +138,6 @@ function sumUserCards() {
         } else return cardValues[card]
     })
     gameState.userCountLow = userCardsValueArrayLow.reduce((acc, num) => acc + num)
-    console.log(`User Count High: ${gameState.userCountHigh}`)
     if (gameState.userCountHigh > 21 && gameState.userCountLow < 22) {
         gameState.userCount = gameState.userCountLow
     } else if (gameState.userCountHigh > 21 && gameState.userCountLow > 21) {
@@ -185,37 +189,57 @@ function drawHouseCard() {
             houseCardsUrls.push(data.cards[0].image)
             addHouseCard(data.cards[0].image)
             sumHouseCards()
+            console.log(gameState.gameOver)
+            if (gameState.gameOver === true) {
+                checkGameStatus()
+            }
         })
         .catch(e => console.log(e))
 }
 
-function houseThinking() {
+//COMPARE COUNTS 
+function compareCounts() {
+    if (gameState.userCount > gameState.houseCount) {
+        message.innerText = "You Win!"
+    } else if (gameState.userCount < gameState.houseCount) {
+        message.innerText = "You Loser!"
+    } else message.innerText = "Push it... Push it real good"
+}
 
+//HOUSE PLAYS AFTER USER
+function houseThinking() {
+    console.log("House bout to make some moves")
+    if (gameState.houseCards.length < 5 && gameState.houseCount < 22) {
+        if (gameState.userCount <= 21 && gameState.houseCount < gameState.userCount) {
+            gameState.housePlaying = true
+            drawHouseCard()
+        } else gameState.housePlaying = false
+    } compareCounts()
 }
 
 //USER STANDS
 function userStands() {
-    let houseCard2 = document.getElementById("house-card-2")
-    gameState.gameOver = true
-    houseCard2.src = houseCardsUrls[1]
+    showHiddenHouseCard()
     console.log("User Stands")
-
+    houseThinking()
 }
 
 //CHECK GAME STATUS AFTER EACH DRAW
 function checkGameStatus() {
-    if (gameState.userCount === 21) {
+    if (gameState.userCount === 21 && !gameState.housePlaying) {
         gameState.gameOver = true
         removeButton()
         console.log("BING BONG - BLACKJACK!")
         message.innerText = "BING BONG - BLACKJACK!"
         userStands()
-    } else if (gameState.userCount > 21) {
+    } else if (gameState.userCount > 21 && !gameState.housePlaying) {
         gameState.gameOver = true
         removeButton()
         console.log("BING BONG - BUSTED!")
         message.innerText = "BING BONG - BUSTED!"
         userStands()
+    } else if (gameState.gameOver) {
+        houseThinking()
     } else return
 }
 
