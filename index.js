@@ -57,6 +57,12 @@ function shuffleDeck() {
         .catch(e => console.log(e))
 }
 
+function removeButton() {
+    const holdButton = document.getElementById("hold-button")
+    holdButton.remove()
+    myButton.innerText = "Run it Back"
+}
+
 //ADD STAY BUTTON AND SET BUTTONS TEXT
 function setButtons() {
     const buttonsDiv = document.getElementById("buttons-div")
@@ -68,9 +74,7 @@ function setButtons() {
         holdButton.onclick = userStands
         buttonsDiv.appendChild(holdButton)
     } else if (gameState.userCards.length === 5) {
-        const holdButton = document.getElementById("hold-button")
-        holdButton.remove()
-        myButton.innerText = "Run it Back"
+        removeButton()
     }
 }
 
@@ -110,11 +114,6 @@ const addHouseCard = (url) => {
     houseCardsContainer.appendChild(houseCardImg)
 }
 
-//USER STANDS
-function userStands() {
-    console.log("User Stands")
-}
-
 //REMOVE CARDS FROM DISPLAY
 function removeCards() {
     let allCards = document.getElementsByClassName("card")
@@ -136,6 +135,8 @@ function sumUserCards() {
     gameState.userCountLow = userCardsValueArrayLow.reduce((acc, num) => acc + num)
     console.log(`User Count High: ${gameState.userCountHigh}`)
     if (gameState.userCountHigh > 21 && gameState.userCountLow < 22) {
+        gameState.userCount = gameState.userCountLow
+    } else if (gameState.userCountHigh > 21 && gameState.userCountLow > 21) {
         gameState.userCount = gameState.userCountLow
     } else gameState.userCount = gameState.userCountHigh
     console.log(`User Count: ${gameState.userCount}`)
@@ -170,6 +171,7 @@ function drawUserCard() {
             sumUserCards()
             setSumDisplay()
             setButtons()
+            checkGameStatus()
         })
         .catch(e => console.log(e))
 }
@@ -187,17 +189,47 @@ function drawHouseCard() {
         .catch(e => console.log(e))
 }
 
+function houseThinking() {
+
+}
+
+//USER STANDS
+function userStands() {
+    let houseCard2 = document.getElementById("house-card-2")
+    gameState.gameOver = true
+    houseCard2.src = houseCardsUrls[1]
+    console.log("User Stands")
+
+}
+
+//CHECK GAME STATUS AFTER EACH DRAW
+function checkGameStatus() {
+    if (gameState.userCount === 21) {
+        gameState.gameOver = true
+        removeButton()
+        console.log("BING BONG - BLACKJACK!")
+        message.innerText = "BING BONG - BLACKJACK!"
+        userStands()
+    } else if (gameState.userCount > 21) {
+        gameState.gameOver = true
+        removeButton()
+        console.log("BING BONG - BUSTED!")
+        message.innerText = "BING BONG - BUSTED!"
+        userStands()
+    } else return
+}
+
 //HANDLE DRAW BUTTON CLICK
 function Draw() {
     //FIRST DRAW
-    if (gameState.userCards.length === 0) {
+    if (gameState.userCards.length === 0 && !gameState.gameOver) {
         drawUserCard()
         drawUserCard()
         drawHouseCard()
         drawHouseCard()
-        message.innerText = "Big Money Big Money Big Money"
+        // message.innerText = "Big Money Big Money Big Money"
         //IN BETWEEN DRAWS
-    } else if (gameState.userCards.length > 0 && gameState.userCards.length < 5) {
+    } else if (gameState.userCards.length > 0 && gameState.userCards.length < 5 && !gameState.gameOver) {
         drawUserCard()
         //NEW GAME START WITH 2 CARDS
     } else {
