@@ -208,22 +208,17 @@ function Draw() {
 }
 
 const getYourDeck = (gameState) => {
+    //IF USER HAS DECK ID STORED IN LOCAL STORAGE
     if (myStorage.deckId) {
         currentDeck = myStorage.getItem('deckId')
         console.log(currentDeck)
         shuffleDeck()
-        // fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/shuffle/`)
-        //     .then(res => res.json())
-        //     .then(data => console.log(data))
-        //     .catch(e => console.log(e))
+    //GET NEW DECK IF NONE IN LOCALS STORAGE
     } else {
-        fetch("https://deckofcardsapi.com/api/deck/new/draw/?count=2")
+        fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
             .then(res => res.json())
             .then(data => {
                 myStorage.setItem('deckId', data.deck_id)
-                data.cards.map(obj => gameState.userCards.push(obj.value))
-                drawUserCard(gameState.userCards.length, gameState.userCards)
-                // theDrawHandler()
                 currentDeck = data.deck_id
             })
             .catch(e => console.log(e))
