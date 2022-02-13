@@ -38,6 +38,7 @@ let gameState = {
     userCards: [],
     userCountHigh: 0,
     userCountLow: 0,
+    userCount: 0,
     houseCards: [],
     houseCountHigh: 0,
     houseCountLow: 0,
@@ -50,48 +51,48 @@ let myStorage = window.localStorage
 function shuffleDeck() {
     fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/shuffle/`)
         .then(res => res.json())
-        .then(data => console.log("Shuffled", data))
+        .then(data => console.log("Shuffled"))
         .catch(e => console.log(e))
 }
 
-function setSumDisplay() {
-    if (gameState.userCountHigh === 21 || gameState.userCountLow == 21) {
-        sumDisplay.innerText = `Sum: ${gameState.userCountLow}`
-    } else if (gameState.userCountHigh > 21 && gameState.userCountLow < 21) {
-        sumDisplay.innerText = `Sum: ${gameState.userCountLow}`
-    } else if (gameState.userCountHigh === gameState.userCountLow) {
-        sumDisplay.innerText = `Sum: ${gameState.userCountHigh}`
-    } else if (gameState.userCountLow > 21) {
-        sumDisplay.innerText = `Sum: ${gameState.userCountLow}`
-    } else {
-        sumDisplay.innerText = `Sum: High - ${gameState.userCountHigh}, Low - ${gameState.userCountLow}`
+function setButtons() {
+    const buttonsDiv = document.getElementById("buttons-div")
+    if (gameState.userCards.length == 2) {
+        myButton.innerText = "Hit Me"
+        let holdButton = document.createElement("button")
+        holdButton.id = "hold-button"
+        holdButton.innerText = "Stand"
+        holdButton.onclick = userStands
+        buttonsDiv.appendChild(holdButton)
+    } else if (gameState.userCards.length === 5) {
+        const holdButton = document.getElementById("hold-button")
+        holdButton.remove()
+        myButton.innerText = "Run it Back"
     }
+}
+
+function setSumDisplay() {
+    sumDisplay.innerText = `Your Total: ${gameState.userCount}`
 }
 
 const addUserCard = (url) => {
     var cardImg = document.createElement("IMG")
     cardImg.src = url
     cardImg.alt = "card"
-    console.log(gameState.userCards)
     cardImg.className = `card card${gameState.userCards.length}`
     userCardsContainer.appendChild(cardImg)
 }
 
 const addHouseCard = (url) => {
     var houseCardImg = document.createElement("IMG")
+    // if (gameState.houseCards.length === 2) {
+    // }
     if (gameState.houseCards.length === 2) {
         houseCardImg.id = "house-card-2"
-        console.log("house card2 id set")
-    } else {
-        console.log("length aint 2")
-    }
-    if (gameState.houseCards.length === 2) {
         houseCardImg.src = "https://andrewthamcc.github.io/blackjack2.0/assets/facedown.png"
     } else if (gameState.houseCards.length === 3) {
         houseCardImg.src = url
         let houseCard2 = document.getElementById("house-card-2")
-        console.log(houseCard2)
-        console.log(houseCardsUrls[1])
         houseCard2.src = houseCardsUrls[1]
     } else {
         houseCardImg.src = url
@@ -103,8 +104,8 @@ const addHouseCard = (url) => {
     houseCardsContainer.appendChild(houseCardImg)
 }
 
-function holdEm() {
-    console.log("Hold Please")
+function userStands() {
+    console.log("User Stands")
 }
 
 function removeCards() {
@@ -124,8 +125,11 @@ function sumUserCards() {
         } else return cardValues[card]
     })
     gameState.userCountLow = userCardsValueArrayLow.reduce((acc, num) => acc + num)
-    // console.log(`User Count High: ${gameState.userCountHigh}`)
-    // console.log(`User Count Low: ${gameState.userCountLow}`)
+    console.log(`User Count High: ${gameState.userCountHigh}`)
+    console.log(`User Count Low: ${gameState.userCountLow}`)
+    if (gameState.userCountHigh > 21 && gameState.userCountLow < 22) {
+        gameState.userCount = gameState.userCountLow
+    } else gameState.userCount = gameState.userCountHigh
 }
 
 function sumHouseCards() {
@@ -162,30 +166,10 @@ function drawHouseCard() {
         .then(data => {
             gameState.houseCards.push(data.cards[0].value)
             houseCardsUrls.push(data.cards[0].image)
-            // console.log(houseCardsUrls)
-            // console.log(gameState.userCards)
             addHouseCard(data.cards[0].image)
             sumHouseCards()
         })
         .catch(e => console.log(e))
-}
-
-function setButtons() {
-    const buttonsDiv = document.getElementById("buttons-div")
-    console.log(gameState.userCards.length)
-    if (gameState.userCards.length == 2) {
-        myButton.innerText = "Hit Me"
-        let holdButton = document.createElement("button")
-        holdButton.id = "hold-button"
-        holdButton.onclick = holdEm()
-        holdButton.innerText = "Stay"
-        console.log("hi!")
-        buttonsDiv.appendChild(holdButton)
-    } else if (gameState.userCards.length === 5) {
-        const holdButton = document.getElementById("hold-button")
-        holdButton.remove()
-        myButton.innerText = "Run it Back"
-    }
 }
 
 function Draw() {
@@ -201,7 +185,6 @@ function Draw() {
         //IN BETWEEN DRAWS
     } else if (gameState.userCards.length > 0 && gameState.userCards.length < 5) {
         drawUserCard()
-        drawHouseCard()
         //NEW GAME START WITH 2 CARDS
     } else {
         //RESET STATE
