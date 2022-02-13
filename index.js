@@ -42,12 +42,14 @@ let gameState = {
     houseCards: [],
     houseCountHigh: 0,
     houseCountLow: 0,
+    houseCount: 0,
     gameOver: false,
     wins: 0,
     losses: 0
 }
 let myStorage = window.localStorage
 
+//SHUFFLE THE DECK
 function shuffleDeck() {
     fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/shuffle/`)
         .then(res => res.json())
@@ -55,6 +57,7 @@ function shuffleDeck() {
         .catch(e => console.log(e))
 }
 
+//ADD STAY BUTTON AND SET BUTTONS TEXT
 function setButtons() {
     const buttonsDiv = document.getElementById("buttons-div")
     if (gameState.userCards.length == 2) {
@@ -71,10 +74,12 @@ function setButtons() {
     }
 }
 
+//RELAY USER COUNT TO THE SUM DISPLAY
 function setSumDisplay() {
     sumDisplay.innerText = `Your Total: ${gameState.userCount}`
 }
 
+//ADD USER CARDS TO DISPLAY
 const addUserCard = (url) => {
     var cardImg = document.createElement("IMG")
     cardImg.src = url
@@ -83,6 +88,7 @@ const addUserCard = (url) => {
     userCardsContainer.appendChild(cardImg)
 }
 
+//ADD HOUSE CARDS TO DISPLAY
 const addHouseCard = (url) => {
     var houseCardImg = document.createElement("IMG")
     // if (gameState.houseCards.length === 2) {
@@ -104,10 +110,12 @@ const addHouseCard = (url) => {
     houseCardsContainer.appendChild(houseCardImg)
 }
 
+//USER STANDS
 function userStands() {
     console.log("User Stands")
 }
 
+//REMOVE CARDS FROM DISPLAY
 function removeCards() {
     let allCards = document.getElementsByClassName("card")
     while (allCards.length > 0) {
@@ -115,6 +123,7 @@ function removeCards() {
     }
 }
 
+//UPDATE USER COUNT
 function sumUserCards() {
     const userCardsValueArray = gameState.userCards.map(card => cardValues[card])
     gameState.userCountHigh = userCardsValueArray.reduce((acc, num) => acc + num)
@@ -126,12 +135,13 @@ function sumUserCards() {
     })
     gameState.userCountLow = userCardsValueArrayLow.reduce((acc, num) => acc + num)
     console.log(`User Count High: ${gameState.userCountHigh}`)
-    console.log(`User Count Low: ${gameState.userCountLow}`)
     if (gameState.userCountHigh > 21 && gameState.userCountLow < 22) {
         gameState.userCount = gameState.userCountLow
     } else gameState.userCount = gameState.userCountHigh
+    console.log(`User Count: ${gameState.userCount}`)
 }
 
+//UPDATE HOUSE COUNT
 function sumHouseCards() {
     const houseCardsValueArray = gameState.houseCards.map(card => cardValues[card])
     gameState.houseCountHigh = houseCardsValueArray.reduce((acc, num) => acc + num)
@@ -142,10 +152,14 @@ function sumHouseCards() {
         } else return cardValues[card]
     })
     gameState.houseCountLow = houseCardsValueArrayLow.reduce((acc, num) => acc + num)
-    // console.log(`House Count High: ${gameState.houseCountHigh}`)
-    // console.log(`House Count Low: ${gameState.houseCountLow}`)
+
+    if (gameState.houseCountHigh > 21 && gameState.houseCountLow < 22) {
+        gameState.houseCount = gameState.houseCountLow
+    } else gameState.houseCount = gameState.houseCountHigh
+    console.log(`House Count: ${gameState.houseCount}`)
 }
 
+//DRAW A USER CARD
 function drawUserCard() {
     fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=1`)
         .then(res => res.json())
@@ -160,6 +174,7 @@ function drawUserCard() {
         .catch(e => console.log(e))
 }
 
+//DRAW A HOUSE CARD
 function drawHouseCard() {
     fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=1`)
         .then(res => res.json())
@@ -172,13 +187,12 @@ function drawHouseCard() {
         .catch(e => console.log(e))
 }
 
+//HANDLE DRAW BUTTON CLICK
 function Draw() {
     //FIRST DRAW
     if (gameState.userCards.length === 0) {
-        //FETCH USERS FIRST 2 CARDS
         drawUserCard()
         drawUserCard()
-        //FETCH HOUSE FIRST 2 CARDS
         drawHouseCard()
         drawHouseCard()
         message.innerText = "Big Money Big Money Big Money"
@@ -210,7 +224,8 @@ function Draw() {
     }
 }
 
-const getYourDeck = (gameState) => {
+//GET THE DECK OF CARDS ON PAGE LOAD
+const getYourDeck = () => {
     //IF USER HAS DECK ID STORED IN LOCAL STORAGE
     if (myStorage.deckId) {
         currentDeck = myStorage.getItem('deckId')
@@ -227,7 +242,7 @@ const getYourDeck = (gameState) => {
             .catch(e => console.log(e))
     }
 }
-getYourDeck(gameState)
+getYourDeck()
 
 // function theDrawHandler() {
 //     //SETTING THE BUTTON AND MESSAGE TEXT
