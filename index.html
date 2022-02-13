@@ -15,8 +15,9 @@
     <header>
     <h1 id="title">Blackjack</h1>
     <p id="message-el">Want to play a round?</p>
-    </header>
-    <div id="all-cards-div">
+</header>
+<div id="all-cards-div">
+        <p id="sum-house" class="sums">House Total:</p>
         <p id="text-cards">House Cards:</p>
         <div id="house-cards-container" class="cards-container">
         </div>
@@ -24,10 +25,10 @@
         <div id="user-cards-container" class="cards-container">
         </div>
     </div>
+    <p id="sum" class="sums">Your Total: 0</p>
     <div id="buttons-div">
         <button onclick="Draw(gameState)" id="button" class="button">DRAW CARDS</button>
     </div>
-    <p id="sum">Your Total: 0</p>
     <script src="index.js"></script>
 </body>
 

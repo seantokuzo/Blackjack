@@ -121,11 +121,19 @@ button:active {
     box-shadow: inset 5px 5px 10px -3px rgba(0, 0, 0, 0.7);
 }
 
-#sum {
+.sums {
     padding: 5px 20px;
-    margin: 15px 0 0;
+    margin: 10px 0;
     font-size: 25px;
 
     border-radius: 10px;
     background-color: var(--dark-grey);
+}
+
+#sum-house {
+    margin: 0px 0 5px;
+}
+
+#sum {
+    margin: 5px 0;
 }

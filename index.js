@@ -9,6 +9,7 @@ const myButton = document.getElementById('button')
 // const houseCard3 = document.getElementById("house-card3")
 // const houseCard4 = document.getElementById("house-card4")
 // const houseCard5 = document.getElementById("house-card5")
+const houseTotal = document.getElementById("sum-house")
 const message = document.getElementById("message-el")
 const sumDisplay = document.getElementById("sum")
 const userCardsContainer = document.getElementById("user-cards-container")
@@ -190,6 +191,9 @@ function drawHouseCard() {
             addHouseCard(data.cards[0].image)
             sumHouseCards()
             console.log(gameState.gameOver)
+            if (gameState.userCards.length === 5) {
+                gameState.gameOver = true
+            }
             if (gameState.gameOver === true) {
                 checkGameStatus()
             }
@@ -199,11 +203,14 @@ function drawHouseCard() {
 
 //COMPARE COUNTS 
 function compareCounts() {
-    if (gameState.userCount > gameState.houseCount) {
+    houseTotal.innerText = `House Total: ${gameState.houseCount}`
+    if (gameState.userCount > gameState.houseCount && gameState.userCount < 22) {
         message.innerText = "You Win!"
-    } else if (gameState.userCount < gameState.houseCount) {
+    } else if (gameState.userCount < gameState.houseCount && gameState.houseCount < 22) {
         message.innerText = "You Loser!"
-    } else message.innerText = "Push it... Push it real good"
+    } else if (gameState.userCount === gameState.houseCount) {
+        message.innerText = "Push it... Push it real good"
+    }
 }
 
 //HOUSE PLAYS AFTER USER
@@ -220,6 +227,8 @@ function houseThinking() {
 //USER STANDS
 function userStands() {
     showHiddenHouseCard()
+    gameState.gameOver = true
+    removeButton()
     console.log("User Stands")
     houseThinking()
 }
@@ -227,14 +236,10 @@ function userStands() {
 //CHECK GAME STATUS AFTER EACH DRAW
 function checkGameStatus() {
     if (gameState.userCount === 21 && !gameState.housePlaying) {
-        gameState.gameOver = true
-        removeButton()
         console.log("BING BONG - BLACKJACK!")
         message.innerText = "BING BONG - BLACKJACK!"
         userStands()
     } else if (gameState.userCount > 21 && !gameState.housePlaying) {
-        gameState.gameOver = true
-        removeButton()
         console.log("BING BONG - BUSTED!")
         message.innerText = "BING BONG - BUSTED!"
         userStands()
