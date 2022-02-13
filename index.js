@@ -13,6 +13,7 @@ const message = document.getElementById("message-el")
 const sumDisplay = document.getElementById("sum")
 const userCardsContainer = document.getElementById("user-cards-container")
 const houseCardsContainer = document.getElementById("house-cards-container")
+const houseCardsUrls = []
 const cardValues = {
     '1': 1,
     '2': 2,
@@ -78,7 +79,23 @@ const addUserCard = (url) => {
 
 const addHouseCard = (url) => {
     var houseCardImg = document.createElement("IMG")
-    houseCardImg.src = url
+    if (gameState.houseCards.length === 2) {
+        houseCardImg.id = "house-card-2"
+        console.log("house card2 id set")
+    } else {
+        console.log("length aint 2")
+    }
+    if (gameState.houseCards.length === 2) {
+        houseCardImg.src = "https://andrewthamcc.github.io/blackjack2.0/assets/facedown.png"
+    } else if (gameState.houseCards.length === 3) {
+        houseCardImg.src = url
+        let houseCard2 = document.getElementById("house-card-2")
+        console.log(houseCard2)
+        console.log(houseCardsUrls[1])
+        houseCard2.src = houseCardsUrls[1]
+    } else {
+        houseCardImg.src = url
+    }
     houseCardImg.alt = "card"
     // console.log(gameState.houseCards)
     // console.log(gameState.houseCards.length)
@@ -144,6 +161,8 @@ function drawHouseCard() {
         .then(res => res.json())
         .then(data => {
             gameState.houseCards.push(data.cards[0].value)
+            houseCardsUrls.push(data.cards[0].image)
+            // console.log(houseCardsUrls)
             // console.log(gameState.userCards)
             addHouseCard(data.cards[0].image)
             sumHouseCards()
@@ -182,6 +201,7 @@ function Draw() {
         //IN BETWEEN DRAWS
     } else if (gameState.userCards.length > 0 && gameState.userCards.length < 5) {
         drawUserCard()
+        drawHouseCard()
         //NEW GAME START WITH 2 CARDS
     } else {
         //RESET STATE
@@ -213,7 +233,7 @@ const getYourDeck = (gameState) => {
         currentDeck = myStorage.getItem('deckId')
         console.log(currentDeck)
         shuffleDeck()
-    //GET NEW DECK IF NONE IN LOCALS STORAGE
+        //GET NEW DECK IF NONE IN LOCALS STORAGE
     } else {
         fetch("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
             .then(res => res.json())
