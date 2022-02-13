@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" intial-scale="1"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
@@ -11,17 +12,20 @@
 </head>
 
 <body>
+    <header>
     <h1 id="title">Blackjack</h1>
     <p id="message-el">Want to play a round?</p>
-    <p id="text-cards">Cards:</p>
+    </header>
     <div id="all-cards-div">
-        <div id="house-cards-container">
+        <p id="text-cards">House Cards:</p>
+        <div id="house-cards-container" class="cards-container">
         </div>
-        <div id="user-cards-container">
+        <p id="text-cards">Your Cards:</p>
+        <div id="user-cards-container" class="cards-container">
         </div>
     </div>
     <div id="buttons-div">
-        <button onclick="Draw()" id="button" class="button">DRAW CARDS</button>
+        <button onclick="Draw(gameState)" id="button" class="button">DRAW CARDS</button>
     </div>
     <p id="sum">Sum: 0</p>
     <script src="index.js"></script>

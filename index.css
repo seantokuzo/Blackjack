@@ -1,5 +1,6 @@
 :root {
-    
+    --off-white: rgb(255, 239, 219);
+    --dark-grey: #2E2E2E;
 }
 
 * {
@@ -15,79 +16,107 @@ body {
     text-align: center;
     font-family: 'Trebuchet MS', sans-serif;
     font-size: 50px;
-    color: #FFFFFF;
+    color:rgb(255, 239, 219);
 
     background-image: url("images/table.png");
 }
 
+header {
+    width: 100%;
+    background-color: #2E2E2E;
+    padding: 10px 20px;
+}
+
 h1 {
-    color: goldenrod;
-    font-size: 100px;
+    color: var(--off-white);
+    font-size: 30px;
 
-    padding: 30px;
-    margin-bottom: 0;
+    margin: 0px 0 0;
 
-    border-radius: 40px;
+    border-radius: 10px;
     background-color: #2E2E2E;
 }
 
 #message-el {
-    font-size: 60px;
+    font-size: 20px;
+    margin: 10px 0 0;
 }
 
 #text-cards {
-    margin: 0 0 20px;;
+    font-size: 15px;
+    margin: 5px 0 0;
+    color: #2E2E2E;
+    background-color: var(--off-white);
+    border-radius: 10px;
+    padding: 5px 10px
 }
 
 #all-cards-div {
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    margin: 10px 0 0;
+    min-height: 400px;
 }
 
-#house-cards-container {
-
-}
-
-#user-cards-container {
-    width: 100%;
-
+.cards-container {
+    min-height: 175px;
+    
     display: flex;
     flex-direction: row;
     justify-content: center;
-
-    padding: 20px;
-    margin-left: auto;
+    
+    padding: 10px;
 }
-
 .card {
-    width: 250px;
+    width: 100px;
     box-shadow: 10px 10px 10px -3px rgba(0, 0, 0, 0.9);
-    margin-right: -135px;
+    margin-right: -55px;
 }
 
 #card1 {
-    /* visibility: hidden; */
     z-index: 1;
+    margin-left: -55px;
 }
 
 #card2 {
-    /* visibility: hidden; */
     z-index: 2;
 }
 
 #card3 {
-    /* visibility: hidden; */
     z-index: 3;
 }
 
 #card4 {
-    /* visibility: hidden; */
     z-index: 4;
 }
 
 #card5 {
-    /* visibility: hidden; */
+    z-index: 5;
+}
+
+#house-card1 {
+    z-index: 1;
+}
+
+#house-card2 {
+    z-index: 2;
+    margin-right: -55px;
+}
+
+#house-card3 {
+    z-index: 3;
+    margin-right: -55px;
+}
+
+#house-card4 {
+    z-index: 4;
+    margin-right: -55px;
+}
+
+#house-card5 {
+    margin-right: -55px;
     z-index: 5;
 }
 
@@ -99,14 +128,12 @@ h1 {
 }
 
 button {
-    position: absolute;
-    top: 80%;
-    font-size: 40px;
+    font-size: 15px;
     border-radius: 10px;
-    margin: 0 20px;
-    padding: 20px;
-    min-width: 250px;
-    color: white;
+    margin: 10px 5px 0;
+    padding: 10px 20px;
+    min-width: 50px;
+    color: var(--off-white);
     background: #2E2E2E;
 }
 
@@ -119,10 +146,10 @@ button:active {
 }
 
 #sum {
-    position: absolute;
-    top: 85%;
-    padding: 30px;
+    padding: 5px 20px;
+    margin: 15px 0 0;
+    font-size: 25px;
 
-    border-radius: 40px;
-    background-color: #2E2E2E;
+    border-radius: 10px;
+    background-color: var(--dark-grey);
 }
