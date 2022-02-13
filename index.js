@@ -204,7 +204,9 @@ function drawHouseCard() {
 //COMPARE COUNTS 
 function compareCounts() {
     houseTotal.innerText = `House Total: ${gameState.houseCount}`
-    if (gameState.userCount > gameState.houseCount && gameState.userCount < 22) {
+    if (gameState.userCount < 22 && gameState.houseCount > 21) {
+        message.innerText = "You Win!"
+    } else if (gameState.userCount > gameState.houseCount && gameState.userCount < 22) {
         message.innerText = "You Win!"
     } else if (gameState.userCount < gameState.houseCount && gameState.houseCount < 22) {
         message.innerText = "You Loser!"
@@ -270,6 +272,7 @@ function Draw() {
         gameState.houseCountHigh = 0
         gameState.houseCountLow = 0
         gameState.gameOver = false
+        houseTotal.innerText = "House Total:"
         message.innerText = "Here We Go Again"
         myButton.innerText = "Hit Me"
         //REMOVE THE PREVIOUS GAME'S CARDS
