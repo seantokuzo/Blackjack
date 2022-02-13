@@ -38,8 +38,8 @@ h1 {
 }
 
 #message-el {
-    font-size: 20px;
-    margin: 10px 0 0;
+    font-size: 18px;
+    margin: 5px 0;
 }
 
 #text-cards {
@@ -123,8 +123,7 @@ button:active {
 
 .sums {
     padding: 5px 20px;
-    margin: 10px 0;
-    font-size: 25px;
+    font-size: 20px;
 
     border-radius: 10px;
     background-color: var(--dark-grey);
