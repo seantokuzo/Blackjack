@@ -132,7 +132,7 @@ button {
     border-radius: 10px;
     margin: 10px 5px 0;
     padding: 10px 20px;
-    min-width: 50px;
+    min-width: 100px;
     color: var(--off-white);
     background: #2E2E2E;
 }

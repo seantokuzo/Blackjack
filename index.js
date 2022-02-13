@@ -13,7 +13,6 @@ const message = document.getElementById("message-el")
 const sumDisplay = document.getElementById("sum")
 const userCardsContainer = document.getElementById("user-cards-container")
 const houseCardsContainer = document.getElementById("house-cards-container")
-const buttonsDiv = document.getElementById("buttons-div")
 const cardValues = {
     '1': 1,
     '2': 2,
@@ -54,98 +53,40 @@ function shuffleDeck() {
         .catch(e => console.log(e))
 }
 
-// function theDrawHandler() {
-//     //SETTING THE USERS COUNTS
-//     const userCardsValueArray = userCards.map(card => cardValues[card])
-//     userCountHigh = userCardsValueArray.reduce((acc, num) => acc + num)
-
-//     const userCardsValueArrayLow = userCards.map(card => {
-//         if (card === "ACE") {
-//             return 1
-//         } else return cardValues[card]
-//     })
-//     userCountLow = userCardsValueArrayLow.reduce((acc, num) => acc + num)
-
-//     //SETTING THE HOUSE COUNTS
-//     const houseCardsValueArray = houseCards.map(card => cardValues[card])
-//     houseCountHigh = houseCardsValueArray.reduce((acc, num) => acc + num)
-
-
-//     const houseCardsValueArrayLow = houseCards.map(card => {
-//         if (card === "ACE") {
-//             return 1
-//         } else return cardValues[card]
-//     })
-//     houseCountLow = houseCardsValueArrayLow.reduce((acc, num) => acc + num)
-
-//     //SETTING THE SUM DISPLAY
-//     if (userCountHigh === 21 || userCountLow == 21) {
-//         sumDisplay.innerText = `Sum: ${userCountLow}`
-//     } else if (userCountHigh > 21 && userCountLow < 21) {
-//         sumDisplay.innerText = `Sum: ${userCountLow}`
-//     } else if (userCountHigh === userCountLow) {
-//         sumDisplay.innerText = `Sum: ${userCountHigh}`
-//     } else if (userCountLow > 21) {
-//         sumDisplay.innerText = `Sum: ${userCountLow}`
-//     } else {
-//         sumDisplay.innerText = `Sum: High - ${userCountHigh}, Low - ${userCountLow}`
-//     }
-//     //SETTING THE BUTTON AND MESSAGE TEXT
-//     if (userCountHigh === 21 || userCountLow === 21) {
-//         message.innerText = "YOU WIN!"
-//         myButton.innerText = "Run It Back"
-//         gameOver = true
-//         userCards.length = 5
-//         console.log(userCards.length)
-//     } else if (userCards.length === 5 && userCountLow < 21) {
-//         message.innerText = "YOU WIN!"
-//         myButton.innerText = "Run It Back"
-//         userCards.length = 5
-//         gameOver = true
-//     } else if (userCountLow > 21) {
-//         message.innerText = "YOU LOSER!"
-//         myButton.innerText = "Try Again"
-//         gameOver = true
-//         userCards.length = 5
-//         console.log(userCards.length)
-//     } else {
-//         message.innerText = "Draw another card or stay?"
-//         myButton.innerText = "Hit Me"
-//     }
-//ADD HOLD BUTTON
-// if (userCards.length > 0 && userCards.length < 5 && gameOver === false) {
-//     let holdButton = document.createElement("button")
-//     holdButton.id = "hold-button"
-//     holdButton.onclick = holdEm()
-//     holdButton.value = "HOLD"
-//     buttonsDiv.appendChild(holdButton)
-// }
-// }
-
-// const setCard = (card, url) => {
-//     card.src = url
-//     card.style.visibility = "visible"
-// }
+function setSumDisplay() {
+    if (gameState.userCountHigh === 21 || gameState.userCountLow == 21) {
+        sumDisplay.innerText = `Sum: ${gameState.userCountLow}`
+    } else if (gameState.userCountHigh > 21 && gameState.userCountLow < 21) {
+        sumDisplay.innerText = `Sum: ${gameState.userCountLow}`
+    } else if (gameState.userCountHigh === gameState.userCountLow) {
+        sumDisplay.innerText = `Sum: ${gameState.userCountHigh}`
+    } else if (gameState.userCountLow > 21) {
+        sumDisplay.innerText = `Sum: ${gameState.userCountLow}`
+    } else {
+        sumDisplay.innerText = `Sum: High - ${gameState.userCountHigh}, Low - ${gameState.userCountLow}`
+    }
+}
 
 const addUserCard = (url) => {
     var cardImg = document.createElement("IMG")
     cardImg.src = url
     cardImg.alt = "card"
     console.log(gameState.userCards)
-    console.log(gameState.userCards.length)
     cardImg.id = `card${gameState.userCards.length}`
     cardImg.className = "card"
     userCardsContainer.appendChild(cardImg)
 }
 
-// const addHouseCard = (url) => {
-//     var houseCardImg = document.createElement("IMG")
-//     houseCardImg.src = url
-//     houseCardImg.alt = "card"
-//     houseCardImg.id = `house-card${gameState.userCards.length}`
-//     houseCardImg.className = "card"
-//     houseCardsContainer.appendChild(houseCardImg)
-// }
+const addHouseCard = (url) => {
+    var houseCardImg = document.createElement("IMG")
+    houseCardImg.src = url
+    houseCardImg.alt = "card"
+    // console.log(gameState.houseCards)
+    // console.log(gameState.houseCards.length)
+    houseCardImg.id = `card${gameState.houseCards.length}`
+    houseCardImg.className = "card"
+    houseCardsContainer.appendChild(houseCardImg)
+}
 
 function holdEm() {
     console.log("Hold Please")
@@ -175,25 +116,31 @@ function holdEm() {
 // }
 
 function drawUserCard() {
-        fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=1`)
-            .then(res => res.json())
-            .then(data => {
-                gameState.userCards.push(data.cards[0].value)
-                // console.log(gameState.userCards)
-                addUserCard(data.cards[0].image)
-                sumUserCards()
-            })
-            .catch(e => console.log(e))
+    fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=1`)
+        .then(res => res.json())
+        .then(data => {
+            gameState.userCards.push(data.cards[0].value)
+            // console.log(gameState.userCards)
+            addUserCard(data.cards[0].image)
+            sumUserCards()
+            setSumDisplay()
+            if (gameState.userCards.length === 2) {
+                setButtons()
+            } else return
+        })
+        .catch(e => console.log(e))
 }
 
 function drawHouseCard() {
     fetch(`https://deckofcardsapi.com/api/deck/${currentDeck}/draw/?count=1`)
-    .then(res => res.json())
-    .then(data => {
-        houseCards.push(data.cards[0].value)
-        addHouseCard(data.cards[0].image, userCards.length)
-    })
-    .catch(e => console.log(e))
+        .then(res => res.json())
+        .then(data => {
+            gameState.houseCards.push(data.cards[0].value)
+            // console.log(gameState.userCards)
+            addHouseCard(data.cards[0].image)
+            sumHouseCards()
+        })
+        .catch(e => console.log(e))
 }
 
 function sumUserCards() {
@@ -206,22 +153,49 @@ function sumUserCards() {
         } else return cardValues[card]
     })
     gameState.userCountLow = userCardsValueArrayLow.reduce((acc, num) => acc + num)
-    // console.log(gameState.userCountHigh)
-    // console.log(gameState.userCountLow)
+    console.log(`User Count High: ${gameState.userCountHigh}`)
+    console.log(`User Count Low: ${gameState.userCountLow}`)
 }
 
-function Draw(gameState) {
+function sumHouseCards() {
+    const houseCardsValueArray = gameState.houseCards.map(card => cardValues[card])
+    gameState.houseCountHigh = houseCardsValueArray.reduce((acc, num) => acc + num)
+
+    const houseCardsValueArrayLow = gameState.houseCards.map(card => {
+        if (card === "ACE") {
+            return 1
+        } else return cardValues[card]
+    })
+    gameState.houseCountLow = houseCardsValueArrayLow.reduce((acc, num) => acc + num)
+    console.log(`House Count High: ${gameState.houseCountHigh}`)
+    console.log(`House Count Low: ${gameState.houseCountLow}`)
+}
+
+function setButtons() {
+    const buttonsDiv = document.getElementById("buttons-div")
+    console.log(gameState.userCards.length)
+    if (gameState.userCards.length > 0 && gameState.userCards.length < 5) {
+        myButton.innerText = "Hit Me"
+        let holdButton = document.createElement("button")
+        holdButton.id = "hold-button"
+        holdButton.onclick = holdEm()
+        holdButton.innerText = "Stay"
+        console.log("hi!")
+        buttonsDiv.appendChild(holdButton)
+    } else if (gameState.userCards.length === 5) {
+        holdButton.remove()
+    }
+}
+
+function Draw() {
     //FIRST DRAW
     if (gameState.userCards.length === 0) {
         //FETCH USERS FIRST 2 CARDS
         drawUserCard()
         drawUserCard()
-        // sumUserCards()
         //FETCH HOUSE FIRST 2 CARDS
-        // userCards.length += 1
-        // drawHouseCard()
-        // userCards.length = 2
-        // drawHouseCard()
+        drawHouseCard()
+        drawHouseCard()
         //IN BETWEEN DRAWS
     } else if (gameState.userCards.length > 0 && gameState.userCards.length < 5) {
         drawUserCard()
@@ -229,7 +203,6 @@ function Draw(gameState) {
     } else {
         //RESET STATE
         gameState.userCards.length = 0
-        console.log(userCards.length)
         gameState.userCards = []
         gameState.userCountHigh = 0
         gameState.userCountLow = 0
@@ -272,3 +245,41 @@ const getYourDeck = (gameState) => {
     }
 }
 getYourDeck(gameState)
+
+// function theDrawHandler() {
+//     //SETTING THE BUTTON AND MESSAGE TEXT
+//     if (userCountHigh === 21 || userCountLow === 21) {
+//         message.innerText = "YOU WIN!"
+//         myButton.innerText = "Run It Back"
+//         gameOver = true
+//         userCards.length = 5
+//         console.log(userCards.length)
+//     } else if (userCards.length === 5 && userCountLow < 21) {
+//         message.innerText = "YOU WIN!"
+//         myButton.innerText = "Run It Back"
+//         userCards.length = 5
+//         gameOver = true
+//     } else if (userCountLow > 21) {
+//         message.innerText = "YOU LOSER!"
+//         myButton.innerText = "Try Again"
+//         gameOver = true
+//         userCards.length = 5
+//         console.log(userCards.length)
+//     } else {
+//         message.innerText = "Draw another card or stay?"
+//         myButton.innerText = "Hit Me"
+//     }
+//ADD HOLD BUTTON
+// if (userCards.length > 0 && userCards.length < 5 && gameOver === false) {
+//     let holdButton = document.createElement("button")
+//     holdButton.id = "hold-button"
+//     holdButton.onclick = holdEm()
+//     holdButton.value = "HOLD"
+//     buttonsDiv.appendChild(holdButton)
+// }
+// }
+
+// const setCard = (card, url) => {
+//     card.src = url
+//     card.style.visibility = "visible"
+// }
