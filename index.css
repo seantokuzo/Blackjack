@@ -24,12 +24,12 @@ body {
 header {
     width: 100%;
     background-color: #2E2E2E;
-    padding: 10px 20px;
+    padding: 5px 20px;
 }
 
 h1 {
     color: var(--off-white);
-    font-size: 30px;
+    font-size: 28px;
 
     margin: 0px 0 0;
 
@@ -39,11 +39,11 @@ h1 {
 
 #message-el {
     font-size: 18px;
-    margin: 5px 0;
+    margin: 0px 0;
 }
 
 #text-cards {
-    font-size: 15px;
+    font-size: 12px;
     margin: 5px 0 0;
     color: #2E2E2E;
     background-color: var(--off-white);
@@ -106,7 +106,7 @@ h1 {
 button {
     font-size: 15px;
     border-radius: 10px;
-    margin: 10px 5px 0;
+    margin: 5px 10px;
     padding: 10px 20px;
     min-width: 100px;
     color: var(--off-white);
